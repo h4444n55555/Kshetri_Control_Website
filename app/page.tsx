@@ -1,85 +1,109 @@
 "use client"
 
-import { useEffect } from "react"
 import Link from "next/link"
+import { useEffect, useState, type MouseEvent } from "react"
 
-import { ContainerScroll } from "./components/container-scroll-animation"
 import { AetherHero } from "@/components/ui/lightning-hero"
-import { CTASection } from "@/components/ui/cta-section"
-import { Timeline } from "@/components/ui/timeline"
-import { StackedCards } from "@/components/ui/stacked-cards"
-import { AnimatedFooter } from "@/components/ui/animated-footer"
+import { ContainerScroll } from "@/components/ui/container-scroll-animation"
 import { TextMarquee } from "@/components/ui/text-marquee"
-import { TubesBackground } from "@/components/ui/TubesBackground"
+import { Timeline } from "@/components/ui/timeline"
+import { TubesBackground } from "@/components/ui/neon-flow"
+import { StackedCards } from "@/components/ui/glass-cards"
+import { CTASection } from "@/components/hero-dithering-card"
+import { Component as FlickeringFooter } from "@/components/ui/flickering-footer"
 
 export default function Page() {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  const handleLogoClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    if (window.location.hash !== "#hero") {
+      window.history.replaceState(null, "", "#hero")
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("active")
-          }
-        })
-      },
-      { threshold: 0.15 }
-    )
-
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el))
-
-    const header = document.getElementById("header")
-
-    const handleScroll = () => {
-      if (window.scrollY > 50) header?.classList.add("scrolled")
-      else header?.classList.remove("scrolled")
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 24)
     }
 
-    window.addEventListener("scroll", handleScroll)
-
-    return () => window.removeEventListener("scroll", handleScroll)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
   return (
     <>
-
-
-      <header id="header">
-        <Link href="#" className="logo">
-          <img src="/logo_no_BG.png" alt="KshetriControl" style={{ height: '36px', width: 'auto' }} />
+      <header id="header" className={isScrolled ? "scrolled" : ""}>
+        <Link href="#hero" className="logo" aria-label="Go to top" onClick={handleLogoClick}>
+          <img
+            src="/logo_no_BG.png"
+            alt="KshetriControl"
+            style={{ height: "36px", width: "auto" }}
+          />
         </Link>
       </header>
 
-      <main>
-        <AetherHero
-          title="Kshetri Control"
-          subtitle="Complete Manufacturing <br /><span>Execution & Traceability System"
-          align="left"
-          overlayGradient="linear-gradient(0deg, #000000ff, transparent)"
-          height="100vh"
-        />
+      <main className="flex flex-col min-h-screen">
+        <section id="hero" className="relative">
+          <AetherHero
+            title="Kshetri Control"
+            subtitle="Complete Manufacturing <br /><span>Execution & Traceability System"
+            align="left"
+            overlayGradient="linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0))"
+            height="100vh"
+          />
+          <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-black to-transparent pointer-events-none z-10" />
+        </section>
 
-        <section id="product" className="w-full max-w-[1600px] mx-auto px-2 md:px-4 pt-32 lg:pt-0" style={{ paddingBottom: '0' }}>
+        <section
+          id="container-scroll"
+          className="w-full max-w-[1600px] mx-auto px-2 md:px-4 pt-10"
+        >
           <ContainerScroll
             titleComponent={
-              <div className="section-header reveal active" style={{ marginBottom: '1rem', paddingBottom: '0' }}>
+              <div
+                className="section-header"
+                style={{ marginBottom: "1rem", paddingBottom: "0" }}
+              >
                 <h2 className="text-4xl md:text-5xl lg:text-[3rem] font-medium font-heading">
                   Real-time Manufacturing Control
                 </h2>
                 <p className="max-w-[600px] mx-auto text-lg text-[var(--text-muted)] mt-6">
-                  Command your entire facility through a single pane of glass, featuring uncompromising clarity and depth.
+                  Command your entire facility through a single pane of glass,
+                  featuring uncompromising clarity and depth.
                 </p>
               </div>
             }
           >
-            <div style={{ marginTop: '0', height: '100%', overflow: 'hidden', borderRadius: '24px' }}>
-              <img src="/Dashboard Desktop.png" alt="Dashboard UI" className="w-full h-full object-cover" />
+            <div className="relative w-full h-full flex items-center justify-center bg-zinc-950 rounded-[2rem] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),inset_0_0_0_1px_rgba(255,255,255,0.04),0_40px_100px_rgba(0,0,0,0.8)]">
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-2 rounded-full bg-zinc-700/80" />
+              <div className="absolute -right-[10px] top-1/2 -translate-y-1/2 w-[5px] h-14 rounded-r-full bg-zinc-600/60" />
+              <div className="absolute -left-[10px] top-[40%] w-[5px] h-10 rounded-l-full bg-zinc-600/60" />
+              <div className="absolute -left-[10px] top-[55%] w-[5px] h-10 rounded-l-full bg-zinc-600/60" />
+              <img
+                src="/Dashboard Desktop.png"
+                alt="Dashboard UI"
+                className="w-full h-full object-cover rounded-[1.4rem]"
+              />
             </div>
           </ContainerScroll>
         </section>
 
-        <section id="roles" className="w-full flex justify-center items-center py-16 md:py-24 overflow-hidden">
-          <TextMarquee className="text-4xl md:text-5xl lg:text-[4rem] font-medium font-heading whitespace-nowrap" height={72} prefix={<><span className="text-[#b490f5]">Four Roles.</span> One System. </>}>
+        <section
+          id="text-marquee"
+          className="w-full flex justify-center items-center py-16 md:py-24 overflow-hidden"
+        >
+          <TextMarquee
+            className="text-4xl md:text-5xl lg:text-[4rem] font-medium font-heading whitespace-nowrap"
+            height={72}
+            prefix={
+              <>
+                <span className="text-[#b490f5]">Four Roles.</span> One System.{" "}
+              </>
+            }
+          >
             <div className="text-purple-400 pl-2">Operators</div>
             <div className="text-blue-400 pl-2">Quality Control</div>
             <div className="text-indigo-400 pl-2">Supervisors</div>
@@ -87,99 +111,91 @@ export default function Page() {
           </TextMarquee>
         </section>
 
-        <section id="features">
-          <Timeline data={[
-            {
-              title: "Statistics",
-              content: (
-                <div className="feature-card !pr-0 overflow-hidden">
-                  <img src="/Statistics Desktop.png" alt="Statistics View" className="w-full h-auto rounded-l-xl shadow-2xl object-cover" />
-                </div>
-              ),
-            },
-            {
-              title: "Traceability",
-              content: (
-                <div className="feature-card !pr-0 overflow-hidden">
-                  <img src="/Trace Desktop.png" alt="Traceability View" className="w-full h-auto rounded-l-xl shadow-2xl object-cover" />
-                </div>
-              ),
-            },
-            {
-              title: "Batch Ledger",
-              content: (
-                <div className="feature-card !pr-0 overflow-hidden">
-                  <img src="/Batch Ledger.png" alt="Batch Ledger View" className="w-full h-auto rounded-l-xl shadow-2xl object-cover" />
-                </div>
-              ),
-            },
-            {
-              title: "QR Scanner",
-              content: (
-                <div className="feature-card !pr-0 overflow-hidden">
-                  <img src="/scanner Desktop.png" alt="QR Scanner View" className="w-full h-auto rounded-l-xl shadow-2xl object-cover" />
-                </div>
-              ),
-            },
-            {
-              title: "Protocols",
-              content: (
-                <div className="feature-card !pr-0 overflow-hidden">
-                  <img src="/Protocols Desktop.png" alt="Protocols View" className="w-full h-auto rounded-l-xl shadow-2xl object-cover" />
-                </div>
-              ),
-            },
-            {
-              title: "Surveillance",
-              content: (
-                <div className="feature-card !pr-0 overflow-hidden">
-                  <img src="/Surveillance Desktop final.png" alt="Surveillance View" className="w-full h-auto rounded-l-xl shadow-2xl object-cover" />
-                </div>
-              ),
-            },
-            {
-              title: "Approvals",
-              content: (
-                <div className="feature-card !pr-0 overflow-hidden">
-                  <img src="/Approvals Desktop.png" alt="Approvals View" className="w-full h-auto rounded-l-xl shadow-2xl object-cover" />
-                </div>
-              ),
-            },
-          ]} />
+        <section id="timeline">
+          <Timeline
+            data={[
+              {
+                title: "Statistics",
+                content: (
+                  <div className="feature-card !pr-0 overflow-hidden">
+                    <img
+                      src="/Statistics Desktop.png"
+                      alt="Statistics View"
+                      className="w-full h-auto rounded-l-xl shadow-2xl object-cover"
+                    />
+                  </div>
+                ),
+              },
+              {
+                title: "Traceability",
+                content: (
+                  <div className="feature-card !pr-0 overflow-hidden">
+                    <img
+                      src="/Trace Desktop.png"
+                      alt="Traceability View"
+                      className="w-full h-auto rounded-l-xl shadow-2xl object-cover"
+                    />
+                  </div>
+                ),
+              },
+              {
+                title: "Batch Ledger",
+                content: (
+                  <div className="feature-card !pr-0 overflow-hidden">
+                    <img
+                      src="/Batch Ledger.png"
+                      alt="Batch Ledger View"
+                      className="w-full h-auto rounded-l-xl shadow-2xl object-cover"
+                    />
+                  </div>
+                ),
+              },
+              {
+                title: "Protocols",
+                content: (
+                  <div className="feature-card !pr-0 overflow-hidden">
+                    <img
+                      src="/Protocols Desktop.png"
+                      alt="Protocols View"
+                      className="w-full h-auto rounded-l-xl shadow-2xl object-cover"
+                    />
+                  </div>
+                ),
+              },
+            ]}
+          />
         </section>
 
-        <section className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
-          <div className="multi-device reveal">
-            <div className="multi-device-text">
-              <h2 className="text-gradient">Flawless everywhere.</h2>
-              <p>Built for the rugged low-light environment of the factory floor on mobility devices, yet uncompromising for robust control from the administration desktop.</p>
+        <section className="container py-16 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <h2 className="text-gradient text-4xl md:text-5xl lg:text-6xl font-heading mb-6">
+                Flawless Control. Anywhere.
+              </h2>
+              <p className="text-[var(--text-muted)] text-lg leading-relaxed mb-4">
+                Full MES power on your phone. Scan, inspect, and approve from anywhere on the floor.
+              </p>
             </div>
-            <div className="mockups-container relative">
-              <div className="absolute inset-0 bg-purple-500/20 blur-[100px] w-[80%] max-w-[380px] h-full mx-auto rounded-full z-0"></div>
-              <div className="mockup-mobile relative bg-[#111111] overflow-hidden flex items-center justify-center border-4 border-zinc-800 shadow-[0_20px_80px_rgba(0,0,0,0.9),0_0_60px_rgba(139,92,246,0.15)] rounded-[40px]">
-                {/* Phone Notch/Speaker */}
-                <div className="absolute top-0 inset-x-0 w-32 h-6 bg-zinc-800 rounded-b-xl mx-auto z-10"></div>
-
-                <div className="w-full h-full bg-black rounded-[32px] overflow-hidden">
-                  <img
-                    src="/Ledger Phone.png"
-                    alt="Mobile App Ledger"
-                    className="w-full h-full object-cover object-top"
-                  />
-                </div>
+            <div className="flex justify-center">
+              <div className="relative w-[240px] md:w-[280px] lg:w-[320px] aspect-[9/19.5] rounded-[3rem] border-[6px] border-white/30 bg-zinc-900 p-1.5 shadow-[0_32px_80px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.08)] backdrop-blur-sm">
+                <div className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2 w-24 h-6 rounded-full bg-black z-10" />
+                <div className="absolute -right-[10px] top-24 w-[5px] h-12 rounded-r-full bg-white/20" />
+                <div className="absolute -left-[10px] top-20 w-[5px] h-8 rounded-l-full bg-white/20" />
+                <div className="absolute -left-[10px] top-32 w-[5px] h-8 rounded-l-full bg-white/20" />
+                <img
+                  src="/Ledger Phone.png"
+                  alt="Ledger mobile preview"
+                  className="w-full h-full rounded-[2.4rem] object-cover"
+                />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Streamlined Workflow / Tubes Section */}
         <section className="relative w-full h-[600px] flex items-center justify-center bg-transparent overflow-hidden">
-          {/* Tubes Background */}
-          <div className="absolute inset-0 z-0 opacity-80 pointer-events-auto">
-            <TubesBackground />
+          <div className="absolute inset-0 z-0 h-full w-full pointer-events-auto">
+            <TubesBackground className="h-full w-full" />
           </div>
-
-          {/* Foreground Text */}
           <div className="relative z-10 text-center max-w-3xl px-4 pointer-events-none">
             <h2 className="text-5xl md:text-7xl font-bold mb-6 text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">
               Streamlined Workflow
@@ -190,16 +206,18 @@ export default function Page() {
           </div>
         </section>
 
-        <section id="how">
+        <section id="glass-cards">
           <StackedCards />
         </section>
 
-        <section id="contact">
+        <section id="cta-dithering" className="bg-transparent">
           <CTASection />
         </section>
-      </main>
 
-      <AnimatedFooter />
+        <section id="flicker-footer" className="pb-0 mb-0 mt-auto">
+          <FlickeringFooter />
+        </section>
+      </main>
     </>
   )
 }

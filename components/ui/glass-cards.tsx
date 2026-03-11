@@ -1,37 +1,11 @@
-'use client';
+"use client";
 
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { cardData } from '../../lib/utils';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const cardData = [
-    {
-        id: 1,
-        title: "Create Batch",
-        description: "Initiate production with defined recipes, BOMs, and raw materials easily.",
-        color: "rgba(138, 92, 246, 0.11)"
-    },
-    {
-        id: 2,
-        title: "QC Inspection",
-        description: "Inline quality checks triggered dynamically at critical production nodes.",
-        color: "rgba(99, 101, 241, 0.26)"
-    },
-    {
-        id: 3,
-        title: "Supervisor Approval",
-        description: "Secure sign-offs natively required for deviations or critical progressions.",
-        color: "rgba(138, 34, 236, 0.18)"
-    },
-    {
-        id: 4,
-        title: "Complete Traceability",
-        description: "Automated generation of immutable digital batch records for compliance.",
-        color: "rgba(117, 23, 161, 0.47)"
-    }
-];
 
 interface CardProps {
     id: number;
@@ -42,9 +16,17 @@ interface CardProps {
     color: string;
 }
 
+const withAlpha = (inputColor: string, alpha: number) => {
+    const match = inputColor.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if (!match) return inputColor;
+    return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha})`;
+};
+
 const Card: React.FC<CardProps> = ({ title, description, index, totalCards, color }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const glassTintStrong = withAlpha(color, 0.18);
+    const glassTintSoft = withAlpha(color, 0.1);
 
     useEffect(() => {
         const card = cardRef.current;
@@ -59,7 +41,7 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
             transformOrigin: "center top"
         });
 
-        // Create scroll trigger for stacking effect
+        // Create scroll trigger for stacking effect (similar to the reference component)
         ScrollTrigger.create({
             trigger: container,
             start: "top center",
@@ -97,9 +79,8 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                 ref={cardRef}
                 style={{
                     position: 'relative',
-                    width: '90%',
-                    maxWidth: '800px',
-                    height: '400px',
+                    width: '70%',
+                    height: '450px',
                     borderRadius: '24px',
                     isolation: 'isolate',
                     top: `calc(-5vh + ${index * 25}px)`,
@@ -117,10 +98,10 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                         background: `conic-gradient(
                             from 0deg,
                             transparent 0deg,
-                            ${color} 60deg,
-                            ${color.replace('0.8', '0.6')} 120deg,
+                            ${withAlpha(color, 0.62)} 60deg,
+                            ${withAlpha(color, 0.42)} 120deg,
                             transparent 180deg,
-                            ${color.replace('0.8', '0.4')} 240deg,
+                            ${withAlpha(color, 0.28)} 240deg,
                             transparent 360deg
                         )`,
                         zIndex: -1
@@ -135,53 +116,24 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
-                    alignItems: 'center', // Center content horizontally
-                    textAlign: 'center', // Add text centering
                     borderRadius: '24px',
                     background: `
-                        linear-gradient(145deg, 
-                            rgba(255, 255, 255, 0.05), 
-                            rgba(255, 255, 255, 0.02)
+                        linear-gradient(160deg,
+                            rgba(4, 3, 8, 0.26),
+                            ${glassTintStrong} 45%,
+                            ${glassTintSoft}
                         )
                     `,
-                    backdropFilter: 'blur(25px) saturate(180%)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(20px) saturate(145%)',
+                    border: `1px solid ${withAlpha(color, 0.24)}`,
                     boxShadow: `
-                        0 8px 32px rgba(0, 0, 0, 0.3),
+                        0 10px 30px rgba(0, 0, 0, 0.28),
                         0 2px 8px rgba(0, 0, 0, 0.2),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                        inset 0 -1px 0 rgba(255, 255, 255, 0.1)
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                        inset 0 -1px 0 ${withAlpha(color, 0.14)}
                     `,
-                    overflow: 'hidden',
-                    padding: '2rem'
+                    overflow: 'hidden'
                 }}>
-                    <div className="step-number" style={{
-                        width: '4rem',
-                        height: '4rem',
-                        borderRadius: '50%',
-                        background: 'rgba(255,255,255,0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '1.5rem',
-                        fontWeight: 'bold',
-                        marginBottom: '1.5rem',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        boxShadow: '0 0 20px ' + color.replace('0.8', '0.3'),
-                        color: 'white',
-
-
-                    }}>
-                        {index + 1}
-                    </div>
-                    <h3 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem', fontFamily: 'var(--font-display)' }}>
-                        {title}
-                    </h3>
-                    <p style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', maxWidth: '600px', lineHeight: 1.6 }}>
-                        {description}
-                    </p>
-
                     {/* Enhanced Glass reflection overlay */}
                     <div style={{
                         position: 'absolute',
@@ -189,7 +141,7 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                         left: 0,
                         right: 0,
                         height: '60%',
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%)',
+                        background: `linear-gradient(140deg, ${withAlpha(color, 0.2)} 0%, ${withAlpha(color, 0.08)} 52%, transparent 100%)`,
                         pointerEvents: 'none',
                         borderRadius: '24px 24px 0 0'
                     }} />
@@ -197,11 +149,11 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                     {/* Glass shine effect */}
                     <div style={{
                         position: 'absolute',
-                        top: '1px',
+                        top: '10px',
                         left: '10px',
                         right: '10px',
-                        height: '1px',
-                        background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)',
+                        height: '2px',
+                        background: `linear-gradient(90deg, transparent 0%, ${withAlpha(color, 0.5)} 50%, transparent 100%)`,
                         borderRadius: '1px',
                         pointerEvents: 'none'
                     }} />
@@ -211,9 +163,9 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                         position: 'absolute',
                         top: 0,
                         left: 0,
-                        width: '1px',
+                        width: '2px',
                         height: '100%',
-                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%)',
+                        background: `linear-gradient(180deg, ${withAlpha(color, 0.24)} 0%, transparent 50%)`,
                         borderRadius: '24px 0 0 24px',
                         pointerEvents: 'none'
                     }} />
@@ -226,15 +178,63 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                         right: 0,
                         bottom: 0,
                         backgroundImage: `
-                            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px),
-                            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.03) 1px, transparent 1px),
-                            radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px)
+                            radial-gradient(circle at 20% 30%, rgba(219,194,255,0.09) 1px, transparent 2px),
+                            radial-gradient(circle at 80% 70%, rgba(196,148,255,0.08) 1px, transparent 2px),
+                            radial-gradient(circle at 40% 80%, rgba(175,116,255,0.06) 1px, transparent 2px)
                         `,
                         backgroundSize: '30px 30px, 25px 25px, 35px 35px',
                         pointerEvents: 'none',
                         borderRadius: '24px',
-                        opacity: 0.5
+                        opacity: 0.42
                     }} />
+
+                    <div style={{
+                        position: 'relative',
+                        zIndex: 2,
+                        padding: '2.2rem',
+                        display: 'grid',
+                        gridTemplateRows: '1fr auto 1fr',
+                        alignItems: 'center',
+                        height: '100%',
+                        justifyItems: 'center',
+                        fontFamily: 'var(--font-sans)'
+                    }}>
+                        <h3 style={{
+                            margin: 0,
+                            fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
+                            lineHeight: 1.05,
+                            fontWeight: 800,
+                            letterSpacing: '-0.02em',
+                            color: '#ffffff',
+                            maxWidth: '18ch',
+                            textAlign: 'center',
+                            alignSelf: 'center'
+                        }}>
+                            {title}
+                        </h3>
+
+                        <div style={{
+                            width: 'min(86%, 580px)',
+                            height: '1px',
+                            background: 'linear-gradient(90deg, rgba(0,0,0,0), rgba(187,136,255,0.65), rgba(0,0,0,0))',
+                            boxShadow: '0 0 20px rgba(152, 89, 255, 0.2)',
+                            justifySelf: 'center'
+                        }}>
+                        </div>
+
+                        <p style={{
+                            margin: 0,
+                            fontSize: 'clamp(1.02rem, 1.4vw, 1.2rem)',
+                            lineHeight: 1.65,
+                            fontWeight: 600,
+                            color: 'rgba(229, 219, 246, 0.88)',
+                            maxWidth: '60ch',
+                            textAlign: 'center',
+                            alignSelf: 'center'
+                        }}>
+                            {description}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -259,15 +259,14 @@ export const StackedCards: React.FC = () => {
     }, []);
 
     return (
-        <div ref={containerRef} style={{ background: 'transparent', position: 'relative' }}>
-
+        <main ref={containerRef} style={{ background: 'transparent' }}>
             {/* Cards Section */}
             <section style={{
                 color: '#ffffff',
-                width: '100%',
-                paddingBottom: '20vh'
+                width: '100%'
             }}>
                 {cardData.map((card, index) => {
+                    const targetScale = 1 - (cardData.length - index) * 0.05;
                     return (
                         <Card
                             key={card.id}
@@ -281,6 +280,6 @@ export const StackedCards: React.FC = () => {
                     );
                 })}
             </section>
-        </div>
+        </main>
     );
 };

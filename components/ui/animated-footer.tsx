@@ -206,7 +206,7 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         if (!ctx) return;
 
         let animationFrameId: number;
-        let gridParams: ReturnType<typeof setupCanvas>;
+        let gridParams: ReturnType<typeof setupCanvas> | undefined;
 
         const updateCanvasSize = () => {
             const newWidth = width || container.clientWidth;
@@ -220,6 +220,7 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         let lastTime = 0;
         const animate = (time: number) => {
             if (!isInView) return;
+            if (!gridParams) return;
 
             const deltaTime = (time - lastTime) / 1000;
             lastTime = time;

@@ -89,7 +89,7 @@ export default function AetherHero({
     /* Shader */
     fragmentSource = DEFAULT_FRAG,
     dprMax = 2,
-    clearColor = [0, 0, 0, 1],
+    clearColor = [0, 0, 0, 0],
 
     /* Misc */
     height = '100vh',
@@ -209,6 +209,20 @@ export default function AetherHero({
             if (programRef.current) gl.deleteProgram(programRef.current);
         };
     }, [fragmentSource, dprMax, clearColor]);
+
+    useEffect(() => {
+        const host = canvasRef.current?.closest("section");
+        if (!host) return;
+        const elements = Array.from(host.querySelectorAll<HTMLElement>(".reveal"));
+        const timer = window.setTimeout(() => {
+            elements.forEach((el) => el.classList.add("active"));
+        }, 80);
+
+        return () => {
+            window.clearTimeout(timer);
+            elements.forEach((el) => el.classList.remove("active"));
+        };
+    }, []);
 
     const justify =
         align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center';
