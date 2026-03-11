@@ -206,18 +206,16 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         if (!ctx) return;
 
         let animationFrameId: number;
-        let gridParams: ReturnType<typeof setupCanvas> | undefined = undefined;
+        let gridParams: ReturnType<typeof setupCanvas>;
 
         const updateCanvasSize = () => {
             const newWidth = width || container.clientWidth;
             const newHeight = height || container.clientHeight;
             setCanvasSize({ width: newWidth, height: newHeight });
-            const params = setupCanvas(canvas, newWidth, newHeight);
-            gridParams = params;
-            return params;
+            gridParams = setupCanvas(canvas, newWidth, newHeight);
         };
 
-        gridParams = updateCanvasSize();
+        updateCanvasSize();
 
         let lastTime = 0;
         const animate = (time: number) => {
@@ -226,7 +224,6 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
             const deltaTime = (time - lastTime) / 1000;
             lastTime = time;
 
-            if (!gridParams) return;
             updateSquares(gridParams.squares, deltaTime);
             drawGrid(
                 ctx,
