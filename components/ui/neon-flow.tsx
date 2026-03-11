@@ -115,7 +115,7 @@ export function TubesBackground({
           "absolute inset-0 block h-full w-full transition-opacity duration-700",
           isLoaded ? "opacity-100" : "opacity-0"
         )}
-        style={{ touchAction: "none" }}
+        style={{ touchAction: "pan-y" }}
       />
 
       <div className="relative z-10 h-full w-full pointer-events-none">{children}</div>

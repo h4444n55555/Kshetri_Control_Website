@@ -93,14 +93,14 @@ export default function Page() {
 
         <section
           id="text-marquee"
-          className="w-full flex justify-center items-center py-16 md:py-24 overflow-hidden"
+          className="w-full flex justify-center items-center py-16 md:py-24 overflow-hidden px-4"
         >
           <TextMarquee
-            className="text-4xl md:text-5xl lg:text-[4rem] font-medium font-heading whitespace-nowrap"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-[4rem] font-medium font-heading whitespace-normal sm:whitespace-nowrap"
             height={72}
             prefix={
               <>
-                <span className="text-[#b490f5]">Four Roles.</span> One System.{" "}
+                <span className="text-[#b490f5]">Four Roles.</span> One System.
               </>
             }
           >
